@@ -1,4 +1,4 @@
-import datetime
+import datetime,os
 from django.core.management.base import BaseCommand
 from accounts.models import *
 from django.core.mail import EmailMessage
@@ -22,7 +22,10 @@ def get_contact_user_list():
     return True
 
 def email_sending(subject, message, to_email):
+    file="{}/google.pdf".format(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [to_email])
+    with open(file,'r') as f:
+        mail.attach(f.name, f.read(), f.content_type)
     mail.send()
 
 class Command(BaseCommand):
