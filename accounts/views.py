@@ -68,6 +68,7 @@ class LoginTemplateView(View):
         if not user:
             messages.info(request, "Invalid login credential.")
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+        login(request,user)
         return HttpResponseRedirect('/accounts/contact/')
 
 
@@ -89,6 +90,8 @@ class SignupTemplateView(View):
 
 class ContactView(View):
     def get(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return HttpResponseRedirect('/login/')
         return render(request, 'contact.html',{"form":ContactForm()})
 
     def post(self, request, *args, **kwargs):
@@ -101,3 +104,8 @@ class ContactView(View):
             messages.info(request, "Invalid form data.")
             return render(request, 'contact.html',{"form":ContactForm()})
 
+class LogOutTemplateView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect('/login/')

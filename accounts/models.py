@@ -10,11 +10,13 @@ class Users(AbstractUser):
         ordering= ["-created_on"]
 
 class Contact(models.Model):
-    name=models.CharField(max_length=255)
+    STATUS = ((0,"No Mail"),(1,"To Admin"),(2,"To User"))
+    name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     description = models.TextField()
     contact_no = models.CharField(max_length=255)
     created_on = models.DateTimeField(auto_now_add=True)
+    status = models.PositiveIntegerField(default=0,choices=STATUS)
     
     class Meta:
         db_table = "tbl_contact"

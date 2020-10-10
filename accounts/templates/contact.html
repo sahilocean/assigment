@@ -5,10 +5,10 @@
     <title>ContactUs</title>
 </head>
 <body>
-
+<a href="{% url 'accounts_logout' %}">LogOut</a>
 <form action="{%url 'contact_form'%}" method="post">
     {%csrf_token%}
-    {{form}}
+    {{form.as_p}}
     <button type="submit"> Submit</button>
 </form>
 
