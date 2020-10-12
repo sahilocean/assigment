@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -9,6 +8,7 @@ from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from .forms import ContactForm
 from .serializers import UserSerializer
 
@@ -64,11 +64,11 @@ class LoginTemplateView(View):
         return render(request, 'registrations/login.html')
 
     def post(self, request, *args, **kwargs):
-        user = authenticate(username=request.POST.get('username'),password=request.POST.get("password"))
+        user = authenticate(username=request.POST.get('username'), password=request.POST.get("password"))
         if not user:
             messages.info(request, "Invalid login credential.")
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-        login(request,user)
+        login(request, user)
         return HttpResponseRedirect('/accounts/contact/')
 
 
@@ -87,22 +87,22 @@ class SignupTemplateView(View):
         return HttpResponseRedirect('/login/')
 
 
-
 class ContactView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_anonymous:
             return HttpResponseRedirect('/login/')
-        return render(request, 'contact.html',{"form":ContactForm()})
+        return render(request, 'contact.html', {"form": ContactForm()})
 
     def post(self, request, *args, **kwargs):
-        form=ContactForm(data=request.POST)
+        form = ContactForm(data=request.POST)
         if form.is_valid():
             form.save()
             messages.info(request, "Sucessfully submitted a from.")
             return HttpResponseRedirect('/accounts/contact/')
         else:
             messages.info(request, "Invalid form data.")
-            return render(request, 'contact.html',{"form":ContactForm()})
+            return render(request, 'contact.html', {"form": ContactForm()})
+
 
 class LogOutTemplateView(APIView):
 
